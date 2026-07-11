@@ -1,64 +1,94 @@
-import Image from "next/image";
+"use client";
+
+import { useQuery } from "convex/react";
+import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { api } from "../../convex/_generated/api";
 
 export default function Home() {
+  const vessels = useQuery(api.vessels.list);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="flex min-h-screen flex-col">
+      <header className="flex items-center justify-between bg-[#1B252E] px-6 py-3 text-white">
+        <div className="flex items-center gap-2">
+          <span className="text-xl" aria-hidden>
+            ⛵
+          </span>
+          <span className="text-lg font-bold tracking-wide">
+            VELA <span className="text-[#00ADEE]">Marine</span>
+          </span>
+        </div>
+        <div>
+          <Show
+            when="signed-in"
+            fallback={
+              <SignInButton mode="modal">
+                <button className="rounded-full bg-[#136FD5] px-5 py-1.5 text-sm font-medium text-white shadow-md">
+                  Iniciar sessão
+                </button>
+              </SignInButton>
+            }
+          >
+            <UserButton />
+          </Show>
+        </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-3xl flex-1 px-6 py-10">
+        <h1 className="mb-1 text-2xl font-bold">Navios</h1>
+        <p className="mb-6 text-sm text-gray-500">
+          Posições AIS na costa ibérica — em breve num mapa live.
+        </p>
+
+        {vessels === undefined && (
+          <p className="text-sm text-gray-400">A carregar navios…</p>
+        )}
+
+        {vessels?.map((vessel) => (
+          <article
+            key={vessel._id}
+            className="mb-4 rounded border border-gray-200 bg-white p-5 shadow-sm"
+          >
+            <div className="mb-2 flex items-baseline gap-3">
+              <h2 className="text-lg font-bold">{vessel.name ?? "—"}</h2>
+              <span className="text-xs uppercase tracking-wide text-gray-500">
+                {vessel.shipType === "sailing" ? "Veleiro" : vessel.shipType}
+              </span>
+            </div>
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:grid-cols-3">
+              <div>
+                <dt className="text-gray-500">MMSI</dt>
+                <dd>{vessel.mmsi}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Indicativo</dt>
+                <dd>{vessel.callSign ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Bandeira</dt>
+                <dd>{vessel.flag ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Destino</dt>
+                <dd>{vessel.destination ?? "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Velocidade</dt>
+                <dd>{vessel.sog != null ? `${vessel.sog} nós` : "—"}</dd>
+              </div>
+              <div>
+                <dt className="text-gray-500">Rumo</dt>
+                <dd>{vessel.cog != null ? `${vessel.cog}°` : "—"}</dd>
+              </div>
+            </dl>
+          </article>
+        ))}
+
+        {vessels?.length === 0 && (
+          <p className="text-sm text-gray-400">
+            Sem navios ainda — o seed corre no arranque do deployment.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+        )}
       </main>
     </div>
   );
