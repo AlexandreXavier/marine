@@ -1,0 +1,150 @@
+{
+  "colorScheme": "light",
+  "fonts": [
+    {
+      "family": "Roboto",
+      "role": "body"
+    },
+    {
+      "family": "Open Sans",
+      "role": "body"
+    }
+  ],
+  "colors": {
+    "primary": "#00ADEE",
+    "secondary": "#1B252E",
+    "accent": "#136FD5",
+    "background": "#FFFFFF",
+    "textPrimary": "#136FD5",
+    "link": "#136FD5"
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": "Roboto",
+      "heading": "Roboto"
+    },
+    "fontStacks": {
+      "heading": [
+        "Roboto",
+        "Helvetica",
+        "Arial",
+        "sans-serif"
+      ],
+      "body": [
+        "Roboto",
+        "Helvetica",
+        "Arial",
+        "sans-serif"
+      ],
+      "paragraph": [
+        "Roboto",
+        "Helvetica",
+        "Arial",
+        "sans-serif"
+      ]
+    },
+    "fontSizes": {
+      "h1": "20px",
+      "h2": "14px",
+      "body": "13px"
+    }
+  },
+  "spacing": {
+    "baseUnit": 4,
+    "borderRadius": "4px"
+  },
+  "components": {
+    "input": {
+      "background": "transparent",
+      "textColor": "#1B252E",
+      "borderColor": null,
+      "borderRadius": "0px",
+      "borderRadiusCorners": {
+        "topLeft": "0px",
+        "topRight": "0px",
+        "bottomRight": "0px",
+        "bottomLeft": "0px"
+      },
+      "shadow": "none"
+    },
+    "buttonPrimary": {
+      "background": "#136FD5",
+      "textColor": "#FFFFFF",
+      "borderRadius": "40px",
+      "borderRadiusCorners": {
+        "topLeft": "40px",
+        "topRight": "40px",
+        "bottomRight": "40px",
+        "bottomLeft": "40px"
+      },
+      "shadow": "rgba(23, 61, 154, 0.22) 0px 2px 4px 0px"
+    },
+    "buttonSecondary": {
+      "background": "transparent",
+      "textColor": "#136FD5",
+      "borderColor": "#136FD5",
+      "borderRadius": "4px",
+      "borderRadiusCorners": {
+        "topLeft": "4px",
+        "topRight": "4px",
+        "bottomRight": "4px",
+        "bottomLeft": "4px"
+      },
+      "shadow": "none"
+    }
+  },
+  "images": {
+    "favicon": "https://www.marinetraffic.com/favicon_n.ico",
+    "ogImage": "/getAssetDefaultPhoto/?photo_size=800&asset_id=6349012&asset_type_id=0"
+  },
+  "__llm_logo_reasoning": {
+    "selectedIndex": -1,
+    "reasoning": "No suitable brand logo was found among the candidates. All options were tiny icons, not representative of a main brand logo.",
+    "confidence": 0.3,
+    "rejected": true,
+    "source": "llm"
+  },
+  "__llm_button_reasoning": {
+    "primary": {
+      "index": 3,
+      "text": "Upgrade",
+      "reasoning": "Button #3 ('Upgrade') is the primary CTA due to its vibrant blue color (#136FD5) and action-oriented text, indicating a significant action."
+    },
+    "secondary": {
+      "index": 5,
+      "text": "Route forecast",
+      "reasoning": "Button #5 ('Route forecast') is secondary due to its outlined style with a transparent background, providing a contrast to the primary button's filled style."
+    },
+    "confidence": 0.95
+  },
+  "personality": {
+    "tone": "professional",
+    "energy": "medium",
+    "targetAudience": "maritime professionals and enthusiasts"
+  },
+  "designSystem": {
+    "framework": "material",
+    "componentLibrary": ""
+  },
+  "confidence": {
+    "buttons": 0.95,
+    "colors": 0.9,
+    "overall": 0.925
+  },
+  "__llm_metadata": {
+    "logoSelection": {
+      "llmCalled": true,
+      "llmSucceeded": true,
+      "finalSource": "llm",
+      "rawLogoSelection": {
+        "selectedLogoIndex": -1,
+        "selectedLogoReasoning": "No suitable brand logo was found among the candidates. All options were tiny icons, not representative of a main brand logo.",
+        "confidence": 0.3
+      }
+    },
+    "buttonClassification": {
+      "llmCalled": true,
+      "llmSucceeded": true
+    }
+  }
+}
