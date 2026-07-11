@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as ingest from "../ingest.js";
 import type * as seed from "../seed.js";
 import type * as vessels from "../vessels.js";
 
@@ -18,6 +19,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  ingest: typeof ingest;
   seed: typeof seed;
   vessels: typeof vessels;
 }>;
