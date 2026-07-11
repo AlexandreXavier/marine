@@ -4,7 +4,9 @@ Recriação do MarineTraffic (mapa AIS live da costa ibérica + detalhe de navio
 
 Trabalha a **fronteira**: qualquer ticket cujos bloqueadores estejam todos concluídos. Depois do ticket 2, os tickets 3, 4 e 7 podem andar em paralelo.
 
-## 1. Esqueleto andante: scaffold + deploy + auth
+## ✅ 1. Esqueleto andante: scaffold + deploy + auth — CONCLUÍDO 2026-07-12
+
+Produção: https://vela-marine.vercel.app · Convex prod: elegant-seal-603 · Verificado em browser (MADMAX + modal Clerk).
 
 **What to build:** O caminho completo stack→produção a funcionar com o mínimo de produto: um visitante abre o site em produção, vê uma página VELA Marine com um navio seed (MADMAX) vindo do Convex, e consegue criar conta/iniciar sessão com Clerk. Repo git inicializado na raiz.
 
