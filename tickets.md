@@ -18,7 +18,9 @@ Produção: https://vela-marine.vercel.app · Convex prod: elegant-seal-603 · V
 - [ ] Deployado: Vercel + Convex production, acessível por URL público
 - [ ] Interface em PT-PT desde já; branding VELA Marine básico (nome, cores da paleta capturada)
 
-## 2. Ingestão AIS real
+## ✅ 2. Ingestão AIS real — CONCLUÍDO 2026-07-12
+
+Worker AISStream (bbox Ibéria) → normalização pura (12 testes) → `ingest.batch` com chave partilhada (6 testes) → 141+ navios reais verificados no Convex dev via `/debug`.
 
 **What to build:** Navios reais do Atlântico ibérico a entrar no sistema continuamente. Um worker Node liga ao AISStream.io (bounding box Galiza→Gibraltar), normaliza as mensagens AIS e escreve em lotes no Convex; uma página de debug mostra a contagem e a lista de navios a atualizar ao vivo.
 
