@@ -32,7 +32,9 @@ Worker AISStream (bbox Ibéria) → normalização pura (12 testes) → `ingest.
 - [ ] Bandeira derivada dos dígitos MID do MMSI
 - [ ] Página de debug com navios reais a aparecer/atualizar em tempo real, corrida contra o feed live
 
-## 3. Mapa live
+## ✅ 3. Mapa live — CONCLUÍDO 2026-07-12
+
+Verificado em produção (https://vela-marine.vercel.app): mapa MapLibre + OpenFreeMap centrado na Ibéria, 266 navios reais como setas coloridas por tipo e rodadas por COG, popup (nome/tipo/velocidade/rumo/link detalhe), shell com sidebar + pesquisa. Transform pura vessel→GeoJSON com 9 testes.
 
 **What to build:** A página principal: mapa MapLibre full-screen onde um visitante vê os navios reais a mover-se em tempo real, coloridos por tipo e orientados pelo rumo, com popup ao clicar (nome, tipo, velocidade, rumo) e link para a página de detalhe. Inclui o shell da app: sidebar escura de ícones e barra de pesquisa no topo (visual, fiel à captura).
 

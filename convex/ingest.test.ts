@@ -1,7 +1,7 @@
 import { convexTest } from "convex-test";
 import { beforeEach, expect, test } from "vitest";
 import schema from "./schema";
-import { api, internal } from "./_generated/api";
+import { api } from "./_generated/api";
 
 const KEY = "chave-de-teste";
 
