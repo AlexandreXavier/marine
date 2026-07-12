@@ -98,3 +98,24 @@ Verificado: botão de frota testado end-to-end em produção (toggle → linha e
 - [ ] Keys (AISStream, chave de ingestão Convex) só em env vars do serviço
 - [ ] Reconexão/restart automático verificado (matar o processo → dados retomam sozinhos)
 - [ ] Site de produção mostra dados frescos com a máquina local desligada
+
+## 8. Vista de percurso — playback de Viagens
+
+**What to build:** Ao abrir um Navio, o visitante pode ver o seu percurso histórico numa vista dedicada de ecrã inteiro (`/vessel/<mmsi>/percurso`, pública), ao estilo da vista de track do MarineTraffic: uma **Viagem** de cada vez desenhada como linha **colorida por velocidade**, com **playback** (play/pausa + scrubber + timestamp) que anima um marcador ao longo da viagem. Abre na Viagem mais recente; setas ‹ › saltam para a anterior/seguinte. Glossário em `CONTEXT.md` (Traçado, Viagem).
+
+Muda também o modelo de dados: passamos a guardar **histórico completo** de posições — a retenção de 48h do ticket 5 é revertida (o cron `deleteOld` é removido; a `positions` cresce sem limite, a monitorizar).
+
+**Blocked by:** 5. Histórico 48h + diretório (tabela `positions`). Implementável já; só fica visualmente rico depois do **7. Worker sempre ligado** acumular histórico — hoje a `positions` está quase vazia.
+
+- [ ] Retenção infinita: remover/desligar o cron `deleteOld`; `positions` deixa de ser purgada
+- [ ] Segmentação em Viagens por gap de tempo > ~2h (função pura on-read, limiar em constante)
+- [ ] Velocidade por troço derivada dos deltas de posição (haversine / Δt), retroativa — função pura
+- [ ] Query servidor: lista de Viagens de um Navio (fronteiras + datas) + pontos de uma Viagem
+- [ ] Rota `/vessel/<mmsi>/percurso` ecrã inteiro (MapLibre), pública, com barra de controlo em baixo
+- [ ] Linha da Viagem colorida por velocidade (gradiente); toggle **Speed** liga/desliga a cor
+- [ ] Playback: play/pausa + scrubber + timestamp; marcador interpolado entre pontos
+- [ ] Navegação de Viagens: mais recente por defeito + anterior/seguinte com data
+- [ ] Toggles **Names** (label do navio) e **Route Overview** (enquadrar a Viagem vs. seguir o marcador)
+- [ ] O card "Traçado" do detalhe passa a preview + botão "Ver percurso"
+
+**Testing decisions:** seam principal continua a ser as funções puras — `segmentVoyages(points, gapMs)` (divide o Traçado em Viagens; testar: um gap parte, gaps pequenos não partem, lista vazia) e `deriveSpeeds(points)` (velocidade por troço via haversine/Δt; testar contra distâncias/tempos conhecidos, Δt=0 não rebenta). A vista/playback é UI de cliente — sem E2E no v1, coerente com os tickets anteriores. A remoção da retenção verifica-se removendo o teste de `deleteOld` correspondente.
