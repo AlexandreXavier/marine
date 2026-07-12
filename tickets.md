@@ -46,7 +46,9 @@ Verificado em produção (https://vela-marine.vercel.app): mapa MapLibre + OpenF
 - [ ] Popup ao clicar com nome, tipo, velocidade, rumo e link para `/vessel/<mmsi>`
 - [ ] Shell da app: sidebar de ícones (`#1B252E`) + barra de pesquisa no topo, layout responsivo utilizável em telemóvel
 
-## 4. Página de detalhe do navio
+## ✅ 4. Página de detalhe do navio — CONCLUÍDO 2026-07-12
+
+Verificado em produção (/vessel/263432000 CRUSTAMAR): cards "Última info AIS" (estado nav, posição "há X s", lat/lng, velocidade, rumo, destino) e "Características" (MMSI, indicativo, bandeira emoji, tipo, comprimento/boca), silhueta por tipo, estado vazio digno para MMSI desconhecido. normalize extrai navStatus + dimensões, vessels.getByMmsi, formatadores puros. +13 testes (44 no total).
 
 **What to build:** Um visitante abre a rota de um navio (por MMSI) e vê o retrato completo: última informação AIS (posição, SOG, COG, estado de navegação, destino, "recebido há X min"), características (MMSI, call sign, bandeira, tipo, dimensões) e silhueta placeholder por tipo — em layout de cards fiel à captura do MADMAX. O link do popup do mapa passa a aterrar aqui.
 

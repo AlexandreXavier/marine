@@ -3,9 +3,11 @@
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { formatRelativeTime } from "@/lib/format";
+import { useNow } from "@/lib/useNow";
 
 export default function DebugPage() {
   const vessels = useQuery(api.vessels.list);
+  const now = useNow();
   const sorted = vessels
     ? [...vessels].sort((a, b) => b.lastSeen - a.lastSeen)
     : undefined;
@@ -45,7 +47,7 @@ export default function DebugPage() {
                 {vessel.sog != null ? `${vessel.sog} nós` : "—"}
               </td>
               <td className="py-1.5 tabular-nums">
-                {formatRelativeTime(vessel.lastSeen, Date.now())}
+                {now != null ? formatRelativeTime(vessel.lastSeen, now) : "…"}
               </td>
             </tr>
           ))}

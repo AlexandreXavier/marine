@@ -7,6 +7,7 @@ import { api } from "../../../../convex/_generated/api";
 import { AppShell } from "@/components/AppShell";
 import { VesselSilhouette } from "@/components/VesselSilhouette";
 import { formatRelativeTime } from "@/lib/format";
+import { useNow } from "@/lib/useNow";
 import { navStatusLabel, shipTypeLabel } from "@/lib/shipTypes";
 
 function flagEmoji(iso?: string): string {
@@ -49,6 +50,7 @@ export default function VesselDetailPage() {
   const mmsi = Number(params.mmsi);
   const valid = Number.isInteger(mmsi) && mmsi > 0;
   const vessel = useQuery(api.vessels.getByMmsi, valid ? { mmsi } : "skip");
+  const now = useNow();
 
   return (
     <AppShell>
@@ -97,7 +99,11 @@ export default function VesselDetailPage() {
                     />
                     <Field
                       label="Posição recebida"
-                      value={formatRelativeTime(vessel.lastSeen, Date.now())}
+                      value={
+                        now != null
+                          ? formatRelativeTime(vessel.lastSeen, now)
+                          : "…"
+                      }
                     />
                     <Field
                       label="Latitude / Longitude"
