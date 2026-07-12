@@ -154,5 +154,8 @@ export function VesselMap() {
     source?.setData(fc);
   }, [vessels]);
 
-  return <div ref={containerRef} className="absolute inset-0" />;
+  // Nota: o container é dimensionado com h-full/w-full (não `absolute inset-0`)
+  // porque o CSS do MapLibre força `.maplibregl-map { position: relative }`,
+  // o que anula o posicionamento absoluto e colapsa a altura para 0.
+  return <div ref={containerRef} className="h-full w-full" />;
 }
