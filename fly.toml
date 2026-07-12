@@ -1,0 +1,14 @@
+# Worker de ingestão AIS da VELA Marine — processo de fundo 24/7.
+# Sem [http_service]: não expõe portas, apenas mantém o WebSocket ao AISStream.
+app = "vela-marine-worker"
+primary_region = "lhr" # Londres, perto do Convex prod (eu-west-1)
+
+[build]
+  dockerfile = "worker/Dockerfile"
+
+[processes]
+  worker = "npm run worker:prod"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

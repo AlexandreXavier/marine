@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.env
+.env*.local
+marinetraffic-capture
+specs
+src
+public
+*.md
+.claude
+.agents
