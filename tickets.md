@@ -60,7 +60,9 @@ Verificado em produção (/vessel/263432000 CRUSTAMAR): cards "Última info AIS"
 - [ ] Silhueta placeholder por categoria de tipo (sem fotos no v1)
 - [ ] Layout de cards/tabs fiel aos screenshots capturados, em PT-PT
 
-## 5. Histórico 48h + diretório pesquisável
+## ✅ 5. Histórico 48h + diretório pesquisável — CONCLUÍDO 2026-07-12
+
+Verificado em produção: diretório /vessels (286 navios, pesquisa+filtro por tipo, linhas → detalhe), pesquisa do topo com dropdown ao vivo → detalhe, mini-mapa de traçado no detalhe (base + marcador; polyline acumula com o worker). Backend: amostragem ~5min, positions.forVessel, cron de retenção 48h, vessels.search (search index). +17 testes (60 no total).
 
 **What to build:** As duas superfícies públicas sobre os dados acumulados: (a) na página de detalhe, um mini-mapa com o traçado das últimas 48h do navio; (b) uma página de diretório onde o visitante pesquisa navios por nome e filtra por tipo, com linhas que navegam para o detalhe. A barra de pesquisa do topo fica funcional.
 
