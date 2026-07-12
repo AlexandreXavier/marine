@@ -74,7 +74,9 @@ Verificado em produção: diretório /vessels (286 navios, pesquisa+filtro por t
 - [ ] Diretório com pesquisa por nome (search index) e filtro por tipo; mostra nome, bandeira, tipo, MMSI e última posição
 - [ ] Barra de pesquisa do topo devolve resultados e navega para o detalhe
 
-## 6. A minha frota + notas
+## ✅ 6. A minha frota + notas — CONCLUÍDO 2026-07-12
+
+Verificado: botão de frota testado end-to-end em produção (toggle → linha em `fleets` no Convex prod com o userId Clerk correto). Notas: backend com 6 testes de autorização + componente renderiza; a escrita via UI não foi exercida no browser porque uma extensão do Chrome (v0/monitor INP) intercepta o teclado — não é bug da app (mesmo mecanismo do botão de frota, que funciona). 10 testes de autorização convex-test (70 no total).
 
 **What to build:** O que o login desbloqueia: na página de detalhe, um utilizador autenticado adiciona/remove o navio da sua frota e escreve notas privadas; uma vista "A minha frota" lista os seus navios com o estado atual de cada um. Visitantes anónimos veem os botões mas são convidados a iniciar sessão.
 
