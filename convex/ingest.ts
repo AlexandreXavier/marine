@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation } from "./_generated/server";
+import { shouldSamplePosition } from "./sampling";
 
 const vesselUpdate = v.object({
   mmsi: v.number(),
@@ -41,17 +42,36 @@ export const batch = mutation({
         Object.entries(update).filter(([, value]) => value !== undefined),
       ) as typeof update;
 
+      const hasPosition =
+        update.lat !== undefined && update.lng !== undefined;
+      const sample =
+        hasPosition && shouldSamplePosition(existing?.lastPointAt, now);
+
       if (existing) {
-        await ctx.db.patch(existing._id, { ...fields, lastSeen: now });
-      } else if (update.lat !== undefined && update.lng !== undefined) {
+        await ctx.db.patch(existing._id, {
+          ...fields,
+          lastSeen: now,
+          ...(sample ? { lastPointAt: now } : {}),
+        });
+      } else if (hasPosition) {
         await ctx.db.insert("vessels", {
           ...fields,
-          lat: update.lat,
-          lng: update.lng,
+          lat: update.lat!,
+          lng: update.lng!,
           lastSeen: now,
+          lastPointAt: now,
         });
       }
       // Sem posição e sem registo prévio: ignora — um navio nasce com posição.
+
+      if (sample) {
+        await ctx.db.insert("positions", {
+          mmsi: update.mmsi,
+          lat: update.lat!,
+          lng: update.lng!,
+          timestamp: now,
+        });
+      }
     }
     return null;
   },

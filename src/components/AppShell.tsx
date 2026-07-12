@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { HeaderSearch } from "@/components/HeaderSearch";
 
 type NavItem = { href: string; label: string; icon: React.ReactNode };
 
@@ -84,23 +85,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <span className="hidden text-lg font-bold tracking-wide sm:block">
             VELA <span className="text-[#00ADEE]">Marine</span>
           </span>
-          <div className="relative flex-1 max-w-xl">
-            <svg
-              viewBox="0 0 24 24"
-              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-4-4" strokeLinecap="round" />
-            </svg>
-            <input
-              type="search"
-              placeholder="Pesquisar navios…"
-              className="w-full rounded-full border border-gray-200 bg-gray-50 py-1.5 pl-9 pr-4 text-sm outline-none focus:border-[#136FD5]"
-            />
-          </div>
+          <HeaderSearch />
           <Show
             when="signed-in"
             fallback={

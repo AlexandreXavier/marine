@@ -19,6 +19,7 @@ const vesselDoc = v.object({
   length: v.optional(v.number()),
   width: v.optional(v.number()),
   lastSeen: v.number(),
+  lastPointAt: v.optional(v.number()),
 });
 
 const MAX_VESSELS = 2000;
@@ -39,5 +40,28 @@ export const getByMmsi = query({
       .query("vessels")
       .withIndex("by_mmsi", (q) => q.eq("mmsi", mmsi))
       .unique();
+  },
+});
+
+const SEARCH_LIMIT = 100;
+
+// Diretório: pesquisa por prefixo de nome (search index) com filtro opcional
+// por tipo. Sem termo, devolve navios (opcionalmente filtrados por tipo).
+export const search = query({
+  args: { query: v.string(), shipType: v.optional(v.string()) },
+  returns: v.array(vesselDoc),
+  handler: async (ctx, { query, shipType }) => {
+    const term = query.trim();
+    if (term === "") {
+      const all = await ctx.db.query("vessels").take(MAX_VESSELS);
+      return shipType ? all.filter((doc) => doc.shipType === shipType) : all;
+    }
+    return await ctx.db
+      .query("vessels")
+      .withSearchIndex("search_name", (q) => {
+        const s = q.search("name", term);
+        return shipType ? s.eq("shipType", shipType) : s;
+      })
+      .take(SEARCH_LIMIT);
   },
 });

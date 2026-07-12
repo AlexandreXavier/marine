@@ -36,6 +36,46 @@ test("um lote de posições cria navios novos", async () => {
   expect(vessels[0].lastSeen).toBeGreaterThan(0);
 });
 
+async function countPositions(
+  t: ReturnType<typeof convexTest>,
+  mmsi: number,
+): Promise<number> {
+  const trail = await t.query(api.positions.forVessel, { mmsi });
+  return trail.length;
+}
+
+test("a primeira posição de um navio grava um ponto de histórico", async () => {
+  const t = convexTest(schema);
+
+  await t.mutation(api.ingest.batch, { key: KEY, updates: [madmaxPosition] });
+
+  expect(await countPositions(t, 232028203)).toBe(1);
+});
+
+test("posições em rápida sucessão (< 5 min) não gravam pontos extra", async () => {
+  const t = convexTest(schema);
+
+  await t.mutation(api.ingest.batch, { key: KEY, updates: [madmaxPosition] });
+  await t.mutation(api.ingest.batch, {
+    key: KEY,
+    updates: [{ ...madmaxPosition, lat: 40.65, lng: -8.72 }],
+  });
+
+  expect(await countPositions(t, 232028203)).toBe(1);
+});
+
+test("mensagem estática (sem lat/lng) não grava ponto de histórico", async () => {
+  const t = convexTest(schema);
+
+  await t.mutation(api.ingest.batch, { key: KEY, updates: [madmaxPosition] });
+  await t.mutation(api.ingest.batch, {
+    key: KEY,
+    updates: [{ mmsi: 232028203, callSign: "MHNU5" }],
+  });
+
+  expect(await countPositions(t, 232028203)).toBe(1);
+});
+
 test("posições repetidas do mesmo MMSI atualizam in-place, sem duplicar", async () => {
   const t = convexTest(schema);
 

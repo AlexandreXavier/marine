@@ -6,6 +6,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { AppShell } from "@/components/AppShell";
 import { VesselSilhouette } from "@/components/VesselSilhouette";
+import { VesselTrailMap } from "@/components/VesselTrailMap";
 import { formatRelativeTime } from "@/lib/format";
 import { useNow } from "@/lib/useNow";
 import { navStatusLabel, shipTypeLabel } from "@/lib/shipTypes";
@@ -158,6 +159,19 @@ export default function VesselDetailPage() {
                 <Card title="Silhueta">
                   <VesselSilhouette shipType={vessel.shipType} />
                 </Card>
+
+                <div className="md:col-span-2">
+                  <Card title="Traçado (últimas 48h)">
+                    <div className="h-72 overflow-hidden rounded">
+                      <VesselTrailMap
+                        mmsi={vessel.mmsi}
+                        lat={vessel.lat}
+                        lng={vessel.lng}
+                        shipType={vessel.shipType}
+                      />
+                    </div>
+                  </Card>
+                </div>
               </div>
             </>
           )}

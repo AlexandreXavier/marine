@@ -17,6 +17,11 @@ export function shipTypeLabel(shipType?: string): string {
   return SHIP_TYPE_LABELS[shipType ?? "other"] ?? SHIP_TYPE_LABELS.other;
 }
 
+// Categorias para o filtro do diretório (chave + rótulo).
+export const SHIP_TYPE_CATEGORIES = Object.entries(SHIP_TYPE_LABELS).map(
+  ([value, label]) => ({ value, label }),
+);
+
 // Estado de navegação AIS (ITU-R M.1371). 15 e outros códigos não mapeados
 // aparecem como "Desconhecido".
 const NAV_STATUS_LABELS: Record<number, string> = {
