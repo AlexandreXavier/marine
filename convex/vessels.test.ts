@@ -31,3 +31,21 @@ test("o seed é idempotente: correr duas vezes não duplica o navio", async () =
   const vessels = await t.query(api.vessels.list, {});
   expect(vessels).toHaveLength(1);
 });
+
+test("vessels.getByMmsi devolve o navio correspondente", async () => {
+  const t = convexTest(schema);
+
+  await t.mutation(internal.seed.run, {});
+
+  const vessel = await t.query(api.vessels.getByMmsi, { mmsi: 232028203 });
+  expect(vessel).toMatchObject({ mmsi: 232028203, name: "MADMAX" });
+});
+
+test("vessels.getByMmsi devolve null para um MMSI desconhecido", async () => {
+  const t = convexTest(schema);
+
+  await t.mutation(internal.seed.run, {});
+
+  const vessel = await t.query(api.vessels.getByMmsi, { mmsi: 111000111 });
+  expect(vessel).toBeNull();
+});

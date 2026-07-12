@@ -14,7 +14,10 @@ const vesselDoc = v.object({
   sog: v.optional(v.number()),
   cog: v.optional(v.number()),
   heading: v.optional(v.number()),
+  navStatus: v.optional(v.number()),
   destination: v.optional(v.string()),
+  length: v.optional(v.number()),
+  width: v.optional(v.number()),
   lastSeen: v.number(),
 });
 
@@ -25,5 +28,16 @@ export const list = query({
   returns: v.array(vesselDoc),
   handler: async (ctx) => {
     return await ctx.db.query("vessels").take(MAX_VESSELS);
+  },
+});
+
+export const getByMmsi = query({
+  args: { mmsi: v.number() },
+  returns: v.union(vesselDoc, v.null()),
+  handler: async (ctx, { mmsi }) => {
+    return await ctx.db
+      .query("vessels")
+      .withIndex("by_mmsi", (q) => q.eq("mmsi", mmsi))
+      .unique();
   },
 });

@@ -16,3 +16,24 @@ const SHIP_TYPE_LABELS: Record<string, string> = {
 export function shipTypeLabel(shipType?: string): string {
   return SHIP_TYPE_LABELS[shipType ?? "other"] ?? SHIP_TYPE_LABELS.other;
 }
+
+// Estado de navegação AIS (ITU-R M.1371). 15 e outros códigos não mapeados
+// aparecem como "Desconhecido".
+const NAV_STATUS_LABELS: Record<number, string> = {
+  0: "A navegar a motor",
+  1: "Fundeado",
+  2: "Sem governo",
+  3: "Manobra restrita",
+  4: "Limitado pelo calado",
+  5: "Amarrado",
+  6: "Encalhado",
+  7: "A pescar",
+  8: "A navegar à vela",
+  11: "A rebocar (atrás)",
+  12: "A rebocar (à frente)",
+};
+
+export function navStatusLabel(code?: number): string {
+  if (code == null) return "Desconhecido";
+  return NAV_STATUS_LABELS[code] ?? "Desconhecido";
+}

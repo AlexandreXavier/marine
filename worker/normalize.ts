@@ -8,11 +8,14 @@ export type VesselUpdate = {
   sog?: number;
   cog?: number;
   heading?: number;
+  navStatus?: number;
   name?: string;
   callSign?: string;
   shipType?: string;
   destination?: string;
   flag?: string;
+  length?: number;
+  width?: number;
 };
 
 // Subconjunto da tabela ITU MID (3 primeiros dígitos do MMSI) → ISO 3166 alpha-2.
@@ -68,6 +71,7 @@ function cleanAisText(raw: unknown): string | undefined {
 }
 
 const HEADING_UNAVAILABLE = 511;
+const NAV_STATUS_UNDEFINED = 15;
 
 type PositionFields = {
   Latitude?: number;
@@ -75,6 +79,7 @@ type PositionFields = {
   Sog?: number;
   Cog?: number;
   TrueHeading?: number;
+  NavigationalStatus?: number;
 };
 
 function positionFields(msg: PositionFields): Partial<VesselUpdate> {
@@ -88,6 +93,13 @@ function positionFields(msg: PositionFields): Partial<VesselUpdate> {
     msg.TrueHeading !== HEADING_UNAVAILABLE
   ) {
     update.heading = msg.TrueHeading;
+  }
+  // Só relatórios de classe A trazem estado de navegação; 15 = não definido.
+  if (
+    typeof msg.NavigationalStatus === "number" &&
+    msg.NavigationalStatus !== NAV_STATUS_UNDEFINED
+  ) {
+    update.navStatus = msg.NavigationalStatus;
   }
   return update;
 }
@@ -127,6 +139,16 @@ export function normalizeAisMessage(raw: unknown): VesselUpdate | null {
       if (destination) update.destination = destination;
       if (typeof body.Type === "number") {
         update.shipType = shipTypeCategory(body.Type);
+      }
+      // Dimensão do casco: A+B = comprimento, C+D = boca (metros).
+      const dim = body.Dimension as
+        | { A?: number; B?: number; C?: number; D?: number }
+        | undefined;
+      if (dim) {
+        const length = (dim.A ?? 0) + (dim.B ?? 0);
+        const width = (dim.C ?? 0) + (dim.D ?? 0);
+        if (length > 0) update.length = length;
+        if (width > 0) update.width = width;
       }
       break;
     }

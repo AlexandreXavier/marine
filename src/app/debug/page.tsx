@@ -2,14 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-
-function age(lastSeen: number): string {
-  const seconds = Math.round((Date.now() - lastSeen) / 1000);
-  if (seconds < 60) return `há ${seconds}s`;
-  const minutes = Math.round(seconds / 60);
-  if (minutes < 60) return `há ${minutes} min`;
-  return `há ${Math.round(minutes / 60)} h`;
-}
+import { formatRelativeTime } from "@/lib/format";
 
 export default function DebugPage() {
   const vessels = useQuery(api.vessels.list);
@@ -51,7 +44,9 @@ export default function DebugPage() {
               <td className="py-1.5 pr-4 tabular-nums">
                 {vessel.sog != null ? `${vessel.sog} nós` : "—"}
               </td>
-              <td className="py-1.5 tabular-nums">{age(vessel.lastSeen)}</td>
+              <td className="py-1.5 tabular-nums">
+                {formatRelativeTime(vessel.lastSeen, Date.now())}
+              </td>
             </tr>
           ))}
         </tbody>

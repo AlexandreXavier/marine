@@ -68,6 +68,17 @@ describe("PositionReport", () => {
     const update = normalizeAisMessage(raw);
     expect(update?.heading).toBeUndefined();
   });
+
+  test("extrai o estado de navegação (código AIS)", () => {
+    const raw = structuredClone(positionReport);
+    raw.Message.PositionReport.NavigationalStatus = 8; // à vela
+    expect(normalizeAisMessage(raw)?.navStatus).toBe(8);
+  });
+
+  test("estado 15 (não definido) é omitido, como o heading 511", () => {
+    // A amostra oficial traz NavigationalStatus 15.
+    expect(normalizeAisMessage(positionReport)?.navStatus).toBeUndefined();
+  });
 });
 
 describe("ShipStaticData", () => {
@@ -87,6 +98,20 @@ describe("ShipStaticData", () => {
     const update = normalizeAisMessage(shipStaticData);
     expect(update?.lat).toBeUndefined();
     expect(update?.lng).toBeUndefined();
+  });
+
+  test("calcula comprimento (A+B) e boca (C+D) a partir da Dimension", () => {
+    const update = normalizeAisMessage(shipStaticData);
+    expect(update?.length).toBe(47); // 20 + 27
+    expect(update?.width).toBe(14); // 7 + 7
+  });
+
+  test("Dimension a zero (desconhecida) não produz dimensões", () => {
+    const raw = structuredClone(shipStaticData);
+    raw.Message.ShipStaticData.Dimension = { A: 0, B: 0, C: 0, D: 0 };
+    const update = normalizeAisMessage(raw);
+    expect(update?.length).toBeUndefined();
+    expect(update?.width).toBeUndefined();
   });
 });
 

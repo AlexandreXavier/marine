@@ -8,11 +8,14 @@ const vesselUpdate = v.object({
   sog: v.optional(v.number()),
   cog: v.optional(v.number()),
   heading: v.optional(v.number()),
+  navStatus: v.optional(v.number()),
   name: v.optional(v.string()),
   callSign: v.optional(v.string()),
   shipType: v.optional(v.string()),
   destination: v.optional(v.string()),
   flag: v.optional(v.string()),
+  length: v.optional(v.number()),
+  width: v.optional(v.number()),
 });
 
 export const batch = mutation({
