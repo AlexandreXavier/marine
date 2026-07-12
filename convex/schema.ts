@@ -36,4 +36,17 @@ export default defineSchema({
   })
     .index("by_mmsi_time", ["mmsi", "timestamp"])
     .index("by_time", ["timestamp"]),
+
+  // Frota pessoal: navios que um utilizador (Clerk) segue.
+  fleets: defineTable({
+    userId: v.string(),
+    mmsi: v.number(),
+  }).index("by_user_mmsi", ["userId", "mmsi"]),
+
+  // Notas privadas por navio, por utilizador.
+  notes: defineTable({
+    userId: v.string(),
+    mmsi: v.number(),
+    text: v.string(),
+  }).index("by_user_mmsi", ["userId", "mmsi"]),
 });

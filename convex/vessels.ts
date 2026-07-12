@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 
-const vesselDoc = v.object({
+export const vesselDoc = v.object({
   _id: v.id("vessels"),
   _creationTime: v.number(),
   mmsi: v.number(),

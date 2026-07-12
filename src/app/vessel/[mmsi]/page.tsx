@@ -7,6 +7,8 @@ import { api } from "../../../../convex/_generated/api";
 import { AppShell } from "@/components/AppShell";
 import { VesselSilhouette } from "@/components/VesselSilhouette";
 import { VesselTrailMap } from "@/components/VesselTrailMap";
+import { FleetButton } from "@/components/FleetButton";
+import { VesselNotes } from "@/components/VesselNotes";
 import { formatRelativeTime } from "@/lib/format";
 import { useNow } from "@/lib/useNow";
 import { navStatusLabel, shipTypeLabel } from "@/lib/shipTypes";
@@ -89,6 +91,9 @@ export default function VesselDetailPage() {
                 <span className="text-sm text-gray-500">
                   MMSI {vessel.mmsi}
                 </span>
+                <div className="ml-auto">
+                  <FleetButton mmsi={vessel.mmsi} />
+                </div>
               </header>
 
               <div className="grid gap-5 md:grid-cols-2">
@@ -158,6 +163,10 @@ export default function VesselDetailPage() {
 
                 <Card title="Silhueta">
                   <VesselSilhouette shipType={vessel.shipType} />
+                </Card>
+
+                <Card title="Notas">
+                  <VesselNotes mmsi={vessel.mmsi} />
                 </Card>
 
                 <div className="md:col-span-2">
