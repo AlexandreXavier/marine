@@ -34,8 +34,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-screen w-full overflow-hidden">
-      <aside className="flex w-14 flex-col items-center gap-1 bg-[#1B252E] py-3 text-white">
+    <div
+      className="grid h-screen w-full overflow-hidden"
+      style={{ gridTemplateColumns: "3.5rem 1fr" }}
+    >
+      <aside className="flex flex-col items-center gap-1 bg-[#1B252E] py-3 text-white">
         <Link
           href="/"
           className="mb-3 text-2xl leading-none"
@@ -73,7 +76,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         })}
       </aside>
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div
+        className="grid min-h-0 min-w-0"
+        style={{ gridTemplateRows: "auto 1fr" }}
+      >
         <header className="flex items-center gap-4 border-b border-gray-200 bg-white px-4 py-2">
           <span className="hidden text-lg font-bold tracking-wide sm:block">
             VELA <span className="text-[#00ADEE]">Marine</span>
@@ -109,7 +115,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Show>
         </header>
 
-        <main className="relative min-h-0 flex-1">{children}</main>
+        <main className="relative min-h-0 overflow-hidden">{children}</main>
       </div>
     </div>
   );

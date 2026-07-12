@@ -81,6 +81,11 @@ export function VesselMap() {
     map.addControl(new maplibregl.NavigationControl(), "bottom-right");
     mapRef.current = map;
 
+    // Se o contentor só ganhar altura depois da inicialização (layout tardio),
+    // o canvas WebGL fica com 0px — o ResizeObserver mantém-no sincronizado.
+    const resizeObserver = new ResizeObserver(() => map.resize());
+    resizeObserver.observe(containerRef.current);
+
     map.on("load", () => {
       map.addSource(SOURCE_ID, {
         type: "geojson",
@@ -122,6 +127,7 @@ export function VesselMap() {
     });
 
     return () => {
+      resizeObserver.disconnect();
       map.remove();
       mapRef.current = null;
       loadedRef.current = false;
