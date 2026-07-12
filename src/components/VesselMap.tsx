@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useQuery } from "convex/react";
@@ -65,8 +65,9 @@ export function VesselMap() {
   const vessels = useQuery(api.vessels.list);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const loadedRef = useRef(false);
-  const addedColors = useRef<Set<string>>(new Set());
+  // Estado (não ref) para que o efeito de dados volte a correr quando o mapa
+  // carrega — a query pode resolver antes do evento `load`.
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   // Inicializa o mapa uma vez.
   useEffect(() => {
@@ -103,7 +104,7 @@ export function VesselMap() {
           "icon-size": 0.8,
         },
       });
-      loadedRef.current = true;
+      setMapLoaded(true);
 
       const popup = new maplibregl.Popup({ closeButton: true, offset: 12 });
       map.on("click", LAYER_ID, (e) => {
@@ -130,29 +131,26 @@ export function VesselMap() {
       resizeObserver.disconnect();
       map.remove();
       mapRef.current = null;
-      loadedRef.current = false;
-      addedColors.current.clear();
     };
   }, []);
 
-  // Alimenta a camada sempre que a query reativa muda.
+  // Alimenta a camada quando a query muda OU quando o mapa acaba de carregar.
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !loadedRef.current || !vessels) return;
+    if (!map || !mapLoaded || !vessels) return;
 
     const fc = toVesselFeatureCollection(vessels as MapVessel[]);
     for (const feature of fc.features) {
       const color = feature.properties.color;
-      if (!addedColors.current.has(color)) {
+      if (!map.hasImage(color)) {
         map.addImage(color, arrowImage(color));
-        addedColors.current.add(color);
       }
     }
     const source = map.getSource(SOURCE_ID) as
       | maplibregl.GeoJSONSource
       | undefined;
     source?.setData(fc);
-  }, [vessels]);
+  }, [vessels, mapLoaded]);
 
   // Nota: o container é dimensionado com h-full/w-full (não `absolute inset-0`)
   // porque o CSS do MapLibre força `.maplibregl-map { position: relative }`,
