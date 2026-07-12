@@ -80,9 +80,15 @@ function connect() {
     console.log("[ws] ligado — bbox Ibéria, à escuta");
   });
 
-  ws.addEventListener("message", (event) => {
+  ws.addEventListener("message", async (event) => {
     try {
-      const raw = JSON.parse(event.data.toString());
+      const data =
+        event.data instanceof Blob
+          ? await event.data.text()
+          : event.data instanceof ArrayBuffer
+            ? new TextDecoder().decode(event.data)
+            : String(event.data);
+      const raw = JSON.parse(data);
       if (raw.error) {
         console.error("[ws] erro do AISStream:", raw.error);
         return;
