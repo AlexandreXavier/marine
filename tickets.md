@@ -99,7 +99,11 @@ Verificado: botão de frota testado end-to-end em produção (toggle → linha e
 - [ ] Reconexão/restart automático verificado (matar o processo → dados retomam sozinhos)
 - [ ] Site de produção mostra dados frescos com a máquina local desligada
 
-## 8. Vista de percurso — playback de Viagens
+## ✅ 8. Vista de percurso — playback de Viagens — CONCLUÍDO 2026-07-13
+
+Verificado em produção (/vessel/255805781/percurso AMALTHEA "Viagem 1/1"; /vessel/263441621/percurso GARCA VERMELHA "Viagem 2/2" — segmentação por gap 24h confirmada): UI completa igual à referência (nav de viagens ‹›, barra de playback com play+timestamp UTC+scrubber, toggles Velocidade/Nome/Ver viagem inteira, card do detalhe → preview + "Ver percurso"). Retenção infinita (cron deleteOld removido, positions.fullTrack). Funções puras segmentVoyages/deriveSpeeds/speedColor com 19 testes (85 no total). Nota: o render dos tiles do mapa não foi confirmável no browser automatizado (degradação de tiles WebGL à escala da sessão — o mapa da home, que renderiza, também apareceu só com hillshade); o padrão MapLibre é idêntico ao VesselTrailMap já verificado.
+
+## 8-detalhe. Vista de percurso — playback de Viagens
 
 **What to build:** Ao abrir um Navio, o visitante pode ver o seu percurso histórico numa vista dedicada de ecrã inteiro (`/vessel/<mmsi>/percurso`, pública), ao estilo da vista de track do MarineTraffic: uma **Viagem** de cada vez desenhada como linha **colorida por velocidade**, com **playback** (play/pausa + scrubber + timestamp) que anima um marcador ao longo da viagem. Abre na Viagem mais recente; setas ‹ › saltam para a anterior/seguinte. Glossário em `CONTEXT.md` (Traçado, Viagem).
 
