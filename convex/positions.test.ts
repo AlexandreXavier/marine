@@ -1,7 +1,7 @@
 import { convexTest } from "convex-test";
 import { expect, test } from "vitest";
 import schema from "./schema";
-import { api, internal } from "./_generated/api";
+import { api } from "./_generated/api";
 
 const HOUR = 3_600_000;
 
@@ -47,18 +47,16 @@ test("positions.forVessel exclui pontos com mais de 48h", async () => {
   expect(trail[0].lat).toBe(41);
 });
 
-test("deleteOld apaga posições com mais de 48h e preserva as recentes", async () => {
+test("positions.fullTrack inclui pontos além das 48h (histórico completo)", async () => {
   const t = convexTest(schema);
   await seedPoints(t, [
-    { mmsi: 1, lat: 40, lng: -8, ageHours: 49 },
-    { mmsi: 1, lat: 41, lng: -8, ageHours: 50 },
-    { mmsi: 1, lat: 42, lng: -8, ageHours: 1 },
+    { mmsi: 1, lat: 40, lng: -8, ageHours: 200 }, // muito antigo
+    { mmsi: 1, lat: 41, lng: -8, ageHours: 49 }, // > 48h
+    { mmsi: 1, lat: 42, lng: -8, ageHours: 1 }, // recente
+    { mmsi: 2, lat: 50, lng: 0, ageHours: 1 }, // outro navio
   ]);
 
-  const deleted = await t.mutation(internal.positions.deleteOld, {});
-  expect(deleted).toBe(2);
-
-  const remaining = await t.run((ctx) => ctx.db.query("positions").collect());
-  expect(remaining).toHaveLength(1);
-  expect(remaining[0].lat).toBe(42);
+  const track = await t.query(api.positions.fullTrack, { mmsi: 1 });
+  expect(track).toHaveLength(3);
+  expect(track.map((p) => p.lat)).toEqual([40, 41, 42]); // cronológico
 });

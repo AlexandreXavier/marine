@@ -170,14 +170,25 @@ export default function VesselDetailPage() {
                 </Card>
 
                 <div className="md:col-span-2">
-                  <Card title="Traçado (últimas 48h)">
-                    <div className="h-72 overflow-hidden rounded">
+                  <Card title="Percurso">
+                    <div className="mb-3 h-72 overflow-hidden rounded">
                       <VesselTrailMap
                         mmsi={vessel.mmsi}
                         lat={vessel.lat}
                         lng={vessel.lng}
                         shipType={vessel.shipType}
                       />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-gray-500">
+                        Pré-visualização das últimas 48h.
+                      </p>
+                      <Link
+                        href={`/vessel/${vessel.mmsi}/percurso`}
+                        className="rounded-full bg-[#136FD5] px-4 py-1.5 text-sm font-medium text-white"
+                      >
+                        Ver percurso →
+                      </Link>
                     </div>
                   </Card>
                 </div>

@@ -1,9 +1,11 @@
 import { v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { query } from "./_generated/server";
 
-export const RETENTION_MS = 48 * 3_600_000; // 48 horas
-const MAX_TRAIL_POINTS = 2000; // 48h a ~5 min ≈ 576 pontos; folga larga
-const DELETE_BATCH = 4000;
+const PREVIEW_WINDOW_MS = 48 * 3_600_000; // 48h para o preview do card
+const MAX_PREVIEW_POINTS = 2000; // 48h a ~5 min ≈ 576 pontos; folga larga
+// Histórico completo é retido para sempre (ver ticket 8); a query devolve
+// no máximo este número de pontos (~5 min → ~5.7 meses) por Navio.
+const MAX_TRACK_POINTS = 50_000;
 
 const trailPoint = v.object({
   lat: v.number(),
@@ -11,18 +13,18 @@ const trailPoint = v.object({
   timestamp: v.number(),
 });
 
-// Traçado das últimas 48h de um navio, por ordem cronológica (índice ascendente).
+// Traçado recente (últimas 48h) — usado no preview do card do detalhe.
 export const forVessel = query({
   args: { mmsi: v.number() },
   returns: v.array(trailPoint),
   handler: async (ctx, { mmsi }) => {
-    const cutoff = Date.now() - RETENTION_MS;
+    const cutoff = Date.now() - PREVIEW_WINDOW_MS;
     const points = await ctx.db
       .query("positions")
       .withIndex("by_mmsi_time", (q) =>
         q.eq("mmsi", mmsi).gt("timestamp", cutoff),
       )
-      .take(MAX_TRAIL_POINTS);
+      .take(MAX_PREVIEW_POINTS);
     return points.map((p) => ({
       lat: p.lat,
       lng: p.lng,
@@ -31,19 +33,20 @@ export const forVessel = query({
   },
 });
 
-// Retenção: remove pontos com mais de 48h. Chamado pelo cron.
-export const deleteOld = internalMutation({
-  args: {},
-  returns: v.number(),
-  handler: async (ctx) => {
-    const cutoff = Date.now() - RETENTION_MS;
-    const stale = await ctx.db
+// Histórico completo de um Navio, por ordem cronológica — alimenta a vista de
+// percurso, que o segmenta em Viagens no cliente (ver src/lib/voyages.ts).
+export const fullTrack = query({
+  args: { mmsi: v.number() },
+  returns: v.array(trailPoint),
+  handler: async (ctx, { mmsi }) => {
+    const points = await ctx.db
       .query("positions")
-      .withIndex("by_time", (q) => q.lt("timestamp", cutoff))
-      .take(DELETE_BATCH);
-    for (const p of stale) {
-      await ctx.db.delete(p._id);
-    }
-    return stale.length;
+      .withIndex("by_mmsi_time", (q) => q.eq("mmsi", mmsi))
+      .take(MAX_TRACK_POINTS);
+    return points.map((p) => ({
+      lat: p.lat,
+      lng: p.lng,
+      timestamp: p.timestamp,
+    }));
   },
 });
