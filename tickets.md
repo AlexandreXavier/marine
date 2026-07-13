@@ -88,7 +88,9 @@ Verificado: botão de frota testado end-to-end em produção (toggle → linha e
 - [ ] Testes de autorização convex-test: sem sessão as mutations falham; um utilizador nunca vê frota/notas de outro
 - [ ] Anónimo que clica nos botões é levado ao sign-in do Clerk
 
-## 7. Worker sempre ligado
+## 🟡 7. Worker sempre ligado — INFRA FEITA, INGESTÃO BLOQUEADA (2026-07-13)
+
+Worker deployado no Fly.io (app `vela-marine-worker`, região lhr, máquina `young-star-1093` + standby `old-breeze-433`), secrets definidos como Fly secrets, reconexão com backoff. **Bug corrigido**: o backoff reiniciava no `open` → tempestade de reconexões (~34/min) que fez a **API key do AISStream ser rate-limited/bloqueada** (WS abre e cai com code=1006, zero mensagens — reproduzível também localmente, logo é a key, não o IP do Fly). Fix commitado (backoff só reinicia na 1ª mensagem saudável). Ambas as máquinas Fly PARADAS para a key arrefecer; um cooldown de ~10min não bastou. **A resolver (fora do meu controlo):** esperar mais pela recuperação da key OU o utilizador verificar a conta AISStream (free tier = 1 ligação/key + possível quota mensal esgotada pelos bursts). Para retomar: `flyctl machine start young-star-1093 --app vela-marine-worker` e confirmar flushes + freshness.
 
 **What to build:** O site em produção fica vivo 24/7: o worker de ingestão corre num serviço gerido (Railway ou Fly.io) com a API key do AISStream em env var, reconecta sozinho e sobrevive a restarts — sem depender da máquina local.
 
