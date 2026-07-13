@@ -64,7 +64,8 @@ function connect() {
   const ws = new WebSocket("wss://stream.aisstream.io/v0/stream");
 
   ws.addEventListener("open", () => {
-    backoffMs = 1000;
+    // Nota: o backoff só é reposto quando chega a 1ª mensagem (ligação saudável),
+    // não no open — evita tempestade de reconexões se a ligação abrir e cair logo.
     ws.send(
       JSON.stringify({
         APIKey: AISSTREAM_API_KEY,
@@ -93,6 +94,7 @@ function connect() {
         console.error("[ws] erro do AISStream:", raw.error);
         return;
       }
+      backoffMs = 1000; // 1ª mensagem confirma ligação saudável
       received++;
       const update = normalizeAisMessage(raw);
       if (update) enqueue(update);
@@ -101,13 +103,19 @@ function connect() {
     }
   });
 
-  ws.addEventListener("close", () => {
-    console.warn(`[ws] ligação caiu; reconecto em ${backoffMs / 1000}s`);
+  ws.addEventListener("close", (event) => {
+    const e = event as CloseEvent;
+    console.warn(
+      `[ws] ligação caiu (code=${e.code} reason=${e.reason || "—"}); reconecto em ${backoffMs / 1000}s`,
+    );
     setTimeout(connect, backoffMs);
     backoffMs = Math.min(backoffMs * 2, MAX_BACKOFF_MS);
   });
 
-  ws.addEventListener("error", () => {
+  ws.addEventListener("error", (event) => {
+    const msg =
+      (event as ErrorEvent).message ?? (event as ErrorEvent).error ?? "";
+    console.error(`[ws] erro de socket: ${msg}`);
     ws.close();
   });
 }
